@@ -133,11 +133,13 @@
         event.preventDefault();
         event.target.classList.remove('drag-over');
 
-        const data = event.dataTransfer.getData('Text');
-        const newListItem = document.createElement('li');
-        newListItem.setAttribute('draggable', 'true');
-        newListItem.innerText = data;
-        event.target.appendChild(newListItem);
+        // const data = event.dataTransfer.getData('Text');
+        // const newListItem = document.createElement('li');
+        // newListItem.setAttribute('draggable', 'true');
+        // newListItem.innerText = data;
+        // event.target.appendChild(newListItem);
+
+        event.target.appendChild(elementBeingDragged.cloneNode(true));
 
         elementBeingDragged.parentNode.removeChild(elementBeingDragged);
         // console.log('drop');
