@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>HTML5 Drag and Drop</title>
+    <style>
+      body {
+        padding: 20px;
+      }
+
+      .column {
+        float: left;
+        margin-right: 5%;
+        width: 45%;
+      }
+
+      .column ul {
+        background: #eee;
+        border: 1px solid black;
+        margin: 0;
+        min-height: 200px;
+        padding: 10px 20px;
+      }
+
+      li {
+        border: none;
+        list-style-type: none;
+        margin: 10px 0;
+        padding: 0;
+      }
+
+      [draggable=true] {
+        cursor: move;
+      }
+
+      .column .drag-over {
+        opacity: 0.5;
+      }
+
+      .drag-over li {
+        pointer-events: none;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>HTML5 Drag and Drop</h1>
+    <section>
+      <h2>Blacklist and Whitelist of allowed users</h2>
+      <section class="column">
+        <h3>Blacklist</h3>
+        <ul>
+          <li draggable="true">Ben</li>
+          <li draggable="true">Jimmy</li>
+        </ul>
+      </section>
+      <section class="column">
+        <h3>Whitelist</h3>
+        <ul>
+          <li draggable="true">Freida</li>
+          <li draggable="true">Samantha</li>
+          <li draggable="true">Joseph</li>
+        </ul>
+      </section>
+    </section>
+    <script>
+      let elementBeingDragged;
+
+      // get all draggable elements
+      const draggableElements = document.querySelectorAll('[draggable="true"]');
+      const noOfDraggableElements = draggableElements.length;
+
+      // add drag start event to draggable elements
+      for (let i=0; i<noOfDraggableElements; i++) {
+        window.addEventListener('dragstart', onDragStart);
+      }
+
+      // get all areas draggable elements can be dropped in
+      const droppableAreas = document.querySelectorAll('.column ul');
+      const noOfDroppableAreas = droppableAreas.length;
+
+      // add event listeners to droppable areas
+      for (let j=0; j<noOfDroppableAreas; j++) {
+        window.addEventListener('dragover', onDragOver);
+        window.addEventListener('dragenter', onDragEnter);
+        window.addEventListener('dragleave', onDragLeave);
+        window.addEventListener('dragend', onDragEnd);
+        window.addEventListener('drop', onDrop);
+      }
+
+      function onDragStart(event) {
+
+        // set the drop effect
+        event.dataTransfer.effectAllowed = 'move';
+
+        // set data for the transfer, which is required for FF
+        event.dataTransfer.setData('Text', event.target.innerText);
+
+        // set an image to represent the item being dragged
+        event.dataTransfer.setDragImage(event.target, 0, 0);
+
+        // keep a record of the element being dragged
+        elementBeingDragged = event.target;
+        // console.log('start');
+        return true;
+      }
+
+      function onDragOver(event) {
+        event.preventDefault();
+        // console.log('over');
+      }
+
+      function onDragEnter(event) {
+        event.preventDefault();
+        event.target.classList.add('drag-over');
+        // console.log('enter');
+      }
+
+      function onDragLeave(event) {
+        event.preventDefault();
+        event.target.classList.remove('drag-over');
+        // console.log('leave');
+      }
+
+      function onDragEnd(event) {
+        event.preventDefault();
+        for (let k=0; k<noOfDroppableAreas; k++) {
+          droppableAreas[k].classList.remove('drag-over');
+        }
+        // console.log('end');
+      }
+
+      function onDrop(event) {
+        event.preventDefault();
+        event.target.classList.remove('drag-over');
+
+        const data = event.dataTransfer.getData('Text');
+        const newListItem = document.createElement('li');
+        newListItem.setAttribute('draggable', 'true');
+        newListItem.innerText = data;
+        event.target.appendChild(newListItem);
+
+        elementBeingDragged.parentNode.removeChild(elementBeingDragged);
+        // console.log('drop');
+      }
+    </script>
+  </body>
+</html>
